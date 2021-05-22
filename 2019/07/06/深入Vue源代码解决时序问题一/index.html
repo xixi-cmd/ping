@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>深入Vue源代码解决时序问题一 - WeiKe</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="weike,"> 
+    <meta name="description" content="私のすべてを支配してください,
+viola 是一个支持 Vue 的动态化框架，其 Vue 版本在 Vue 官方版本 2.5.7 上进行了少量改写，本文针对其进行具体分析。
+
+最初，有使用者报告一个错误：在 iOS 系统，退出页面,"> 
+    <meta name="author" content="WeiKe_Joe"> 
+    <link rel="alternative" href="atom.xml" title="WeiKe" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">WeiKe</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://cn.weikecc.top"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">深入Vue源代码解决时序问题一</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">深入Vue源代码解决时序问题一</h1>
+        <div class="stuff">
+            <span>七月 06, 2019</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/viola/" rel="tag">viola</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <blockquote>
+<p>viola 是一个支持 Vue 的动态化框架，其 Vue 版本在 Vue 官方版本 2.5.7 上进行了少量改写，本文针对其进行具体分析。</p>
+</blockquote>
+<p>最初，有使用者报告一个错误：在 iOS 系统，退出页面的时候，框架报错：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TypeError: undefined is not an object(evaluating &#x27;e.isDestroyed&quot;</span><br></pre></td></tr></table></figure>
+
+<p>接到这个错误之后，我首先进入 Vue 的 debug 版本，尝试获取更详细的信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TypeError: undefined is not an object(evaluating &#x27;componentInstance.isDestroyed&quot;</span><br></pre></td></tr></table></figure>
+
+<p>我们顺利地拿到了报错的变量名称，去 Vue 源代码中搜索，我们可以发现报错之处：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">destroy: <span class="function"><span class="keyword">function</span> <span class="title">destroy</span> (<span class="params">vnode</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> componentInstance = vnode.componentInstance;</span><br><span class="line">    <span class="keyword">if</span> (!componentInstance._isDestroyed) &#123; <span class="comment">// 这里报错</span></span><br><span class="line">      <span class="keyword">if</span> (!vnode.data.keepAlive) &#123;</span><br><span class="line">        componentInstance.$destroy();</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        deactivateChildComponent(componentInstance, <span class="literal">true</span> <span class="comment">/* direct */</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里是 <code>componentInstance</code> 为 undefined，这个实际上是 vnode 的实例，其为 undefined，说明该 vue 组件在之前的阶段就已经出错不正常了，这里并不是错误的根源所在，我们需要再次进行寻找报错原因。</p>
+<p>于是我们查看业务代码的所有日志，又发现了这样一条报错：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Vue warn]: Error in nextTick: &quot;TypeError: undefined is not an object (evaluating &#x27;vm.$options&#x27;)&quot; </span><br></pre></td></tr></table></figure>
+
+<p>初始化阶段出现这样一个错误，我们怀疑 <code>vm</code> 就是上文的 <code>componentInstance</code>，于是，我们打印报错堆栈：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"> 调用栈:</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateChildComponent</span>(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="function">    vm,</span></span></span><br><span class="line"><span class="params"><span class="function">    propsData,</span></span></span><br><span class="line"><span class="params"><span class="function">    listeners,</span></span></span><br><span class="line"><span class="params"><span class="function">    parentVnode,</span></span></span><br><span class="line"><span class="params"><span class="function">    renderChildren</span></span></span><br><span class="line"><span class="params"><span class="function">  </span>) </span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">        <span class="keyword">var</span> hasChildren = !!(</span><br><span class="line">              renderChildren ||</span><br><span class="line">              vm.$options._renderChildren || <span class="comment">// 这里报错</span></span><br><span class="line">              parentVnode.data.scopedSlots ||</span><br><span class="line">              vm.$scopedSlots !== emptyObject</span><br><span class="line">            );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">prepatch</span>(<span class="params">oldVnode, vnode</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">var</span> options = vnode.componentOptions;</span><br><span class="line">      <span class="keyword">var</span> child = vnode.componentInstance = oldVnode.componentInstance;</span><br><span class="line">      updateChildComponent(</span><br><span class="line">        child,</span><br><span class="line">        options.propsData,</span><br><span class="line">        options.listeners,</span><br><span class="line">        vnode,</span><br><span class="line">        options.children</span><br><span class="line">      );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">patchVnode</span>(<span class="params">oldVnode, vnode, insertedVnodeQueue, removeOnly</span>) </span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">patch</span>(<span class="params">oldVnode, vnode, hydrating, removeOnly</span>) </span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params">vnode, hydrating</span>) </span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        vm._update(vm._render(), hydrating);</span><br><span class="line">      &#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getAndInvoke</span>(<span class="params">cb</span>) </span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">flushSchedulerQueue</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">flushCallbacks</span>(<span class="params"></span>) </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用栈实际上有点冗长，不过我们还是能发现两个有用的信息：</p>
+<ul>
+<li>初始化阶段为 <code>undefined</code> 的 <code>vm</code>，就是 <code>componentInstance</code>，也就是和 destroy 阶段的报错属于同一个原因。</li>
+<li>根据调用栈发现，这是一个更新阶段的报错。</li>
+</ul>
+<p>这引发了我们的思考：更新阶段找不到 <code>componentInstance</code> 报错。</p>
+<p>这里实际上有点阻塞了，因为一般来说，Vue 的源代码经过测试，应该不会出现这种问题的，那是不是我们的问题呢，我们回归到业务代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">created() &#123;</span><br><span class="line">    this.getFeedsListFromCache();</span><br><span class="line">&#125;,</span><br><span class="line">methods: &#123;</span><br><span class="line">    getFeedsListFromCache() &#123;</span><br><span class="line">        viola.requireAPI(&quot;cache&quot;).getItem(this.cacheKey_feeds, data =&gt; &#123;</span><br><span class="line">            this.processData(data.list);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    processData(list = [], opt = &#123;&#125;) &#123;</span><br><span class="line">        if (this.list.length &lt; cacehFeedsLength) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        this.list = [];</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们对业务代码进行了抽象简化，上面是我们的最小问题 Demo，实际上我们就做了这样一件事情：</p>
+<ul>
+<li>在 created 执行方法，调用端的接口，再回调函数里面更新某个 data 中声明的数据。</li>
+</ul>
+<p>首先，我们可以梳理下对一般 vue 组件的初始化更新，vue 是如何做的：</p>
+<ul>
+<li>created 时实际上 vnode 已经建立完成，这个时候还没有 mount，但是数据监听已经建立了，这个时候如果改动数据，会把相关 update 函数放在一个名为 flushCallbacks 的函数队列中。</li>
+<li>该函数队列会通过默认为 <code>Promise.then</code> 的 microtask 方式来调度，当前阶段的 mount 流程会继续，mount 结束后，会执行 flushCallbacks 队列中的更新操作。</li>
+</ul>
+<p>从代码层面上来讲，这几个流程应该是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">├── callHook(vm, &#x27;created&#x27;); // 执行created 钩子</span><br><span class="line">├── proxySetter(val); // 改变数据，调用 proxy</span><br><span class="line">├── Watcher.prototype.update; // 调用 Watcher，将 update 操作入栈</span><br><span class="line">├── vm.$mount(vm.$options.el); // 执行 mount 流程</span><br><span class="line">├── callHook(vm, &#x27;beforeMount&#x27;);</span><br><span class="line">├──  callHook(vm, &#x27;mounted&#x27;); // 依次调用 beforeMount 和 mounted</span><br><span class="line">└── flushCallbacks // 执行 更新</span><br></pre></td></tr></table></figure>
+
+<p>然后我们分析我们这里的流程，首先值得强调的是这个函数 <code>viola.requireAPI(&quot;cache&quot;).getItem</code>，这个函数是端注入的函数，但我们不能将其当作异步函数来对待，实际上，<strong>这是一个同步函数</strong>，（至于这个同步函数和 js 中的普通函数，是否有区别，还有待商榷，不过应该是有区别的，因为如果我们不用此函数的话，就不会出现该问题。）</p>
+<p>接下来，我们打出详细的调用栈，根据顺序来分析实际的执行流程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">├── callHook(vm, &#x27;created&#x27;); // 执行created 钩子</span><br><span class="line">├── proxySetter(val); // 改变数据，调用 proxy</span><br><span class="line">├── Watcher.prototype.update; // 调用 Watcher，将 update 操作入栈</span><br><span class="line">├── flushCallbacks // 执行 更新</span><br><span class="line">├── vm.$mount(vm.$options.el); // 执行 mount 流程 </span><br><span class="line">├── callHook(vm, &#x27;beforeMount&#x27;);</span><br><span class="line">└── callHook(vm, &#x27;mounted&#x27;); // 依次调用 beforeMount 和 mounted</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，我们的执行流程出现了很大问题：<strong>在 mount 阶段未完成的时候就执行了 flushCallbacks，先执行更新操作，这里的顺序错乱导致了后续问题</strong>。</p>
+<p>我们可看下调用 <code>flushCallbacks</code> 的代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">Promise</span> !== <span class="string">&#x27;undefined&#x27;</span> &amp;&amp; isNative(<span class="built_in">Promise</span>)) &#123;</span><br><span class="line">  <span class="keyword">var</span> p = <span class="built_in">Promise</span>.resolve();</span><br><span class="line">  microTimerFunc = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    p.then(flushCallbacks);</span><br><span class="line">    <span class="comment">// in problematic UIWebViews, Promise.then doesn&#x27;t completely break, but</span></span><br><span class="line">    <span class="comment">// it can get stuck in a weird state where callbacks are pushed into the</span></span><br><span class="line">    <span class="comment">// microtask queue but the queue isn&#x27;t being flushed, until the browser</span></span><br><span class="line">    <span class="comment">// needs to do some other work, e.g. handle a timer. Therefore we can</span></span><br><span class="line">    <span class="comment">// &quot;force&quot; the microtask queue to be flushed by adding an empty timer.</span></span><br><span class="line">    <span class="keyword">if</span> (isIOS) &#123; <span class="built_in">setTimeout</span>(noop); &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>这里 <code>microTimerFunc</code> 的 <code>p.then</code>，被同步执行了，也就是说，这里的微任务优先于当前事件循环的函数执行了（此时由于 mount 流程是同步的，mount 流程的相关函数<strong>理应</strong>在该事件循环中，优先于微任务执行）。</p>
+<p>我们找到了根源，接下来就是分析解决方案和根本原因。</p>
+<p>由于我们的问题在于 update 流程执行太快了，所以采用一种方式放慢一点即可：</p>
+<ul>
+<li>将 vue 的微任务模式（默认）改成宏任务模式：<code>var useMacroTask = false; =&gt; true</code>。</li>
+<li>在 created 阶段的加一个 <code>setTimeout(0)</code>。</li>
+</ul>
+<p>不过对于根本原因，实际上本次仍然没有完全分析透彻，还留有如下疑问：</p>
+<ul>
+<li><code>viola.requireAPI(&quot;cache&quot;).getItem</code> 这个函数到底做了什么？其对事件循环有什么影响？</li>
+<li>在执行 <code>microTimerFunc</code> 的时候，为什么 <code>p.then</code> 优先于 <code>vm.$mount</code> 执行了？</li>
+<li>该错误仅在 iOS 系统出现，iOS 系统是否会在某些情况将微任务的优先级变高？</li>
+</ul>
+<p>对于这些疑问，Vue 源代码中也做了一些评论：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// Here we have async deferring wrappers using both microtasks and (macro) tasks.</span><br><span class="line">// In &lt; 2.4 we used microtasks everywhere, but there are some scenarios where</span><br><span class="line">// microtasks have too high a priority and fire in between supposedly</span><br><span class="line">// sequential events (e.g. #4521, #6690) or even between bubbling of the same</span><br><span class="line">// event (#6566). However, using (macro) tasks everywhere also has subtle problems</span><br><span class="line">// when state is changed right before repaint (e.g. #6813, out-in transitions).</span><br><span class="line">// Here we use microtask by default, but expose a way to force (macro) task when</span><br><span class="line">// needed (e.g. in event handlers attached by v-on).</span><br></pre></td></tr></table></figure>
+
+<p>不过，这里始终都没有找到最本质的原因，也许这和 iOS JSCore 的微任务/宏任务的处理机制有关，具体原因，待下次探究。</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='true'
+        data-ci=''
+        data-cs=''
+        data-r='suda'
+        data-o='xixi-cmd'
+        data-a='xixi-cmd'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+				
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</html>

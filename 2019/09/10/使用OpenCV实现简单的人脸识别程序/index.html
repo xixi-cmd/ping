@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>使用 OpenCV 实现简单的人脸识别程序 - WeiKe</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="weike,"> 
+    <meta name="description" content="私のすべてを支配してください,本问就 Mac 系统安装 OpenCV 以及实现一个简单的人脸识别程序进行记录。
+安装 OpenCV实际上，OpenCV 的安装方式比较多，这里为了避免一些第三方安装的问题，我们采用源代码方式安装。,"> 
+    <meta name="author" content="WeiKe_Joe"> 
+    <link rel="alternative" href="atom.xml" title="WeiKe" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">WeiKe</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://cn.weikecc.top"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">使用 OpenCV 实现简单的人脸识别程序</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">使用 OpenCV 实现简单的人脸识别程序</h1>
+        <div class="stuff">
+            <span>九月 10, 2019</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/OpenCV/" rel="tag">OpenCV</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p>本问就 Mac 系统安装 OpenCV 以及实现一个简单的人脸识别程序进行记录。</p>
+<h3 id="安装-OpenCV"><a href="#安装-OpenCV" class="headerlink" title="安装 OpenCV"></a>安装 OpenCV</h3><p>实际上，OpenCV 的安装方式比较多，这里为了避免一些第三方安装的问题，我们采用源代码方式安装。</p>
+<p>安全前请确保本机已经安装了 CMake 和 Xcode。</p>
+<p>我们去<a target="_blank" rel="noopener" href="https://opencv.org/releases/"> OpenCV 的网站</a> 下载源代码，选择 Release -&gt; SourceCode，可以选择最新的 4.11 版本。</p>
+<p>这里以 4.1.1 版本为例，下载后我们解压到 <code>opencv-4.1.1</code>，然后进入到该目录，新建一个 release 目录用于存放我们构建好的内容，并进入到该目录：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir release</span><br><span class="line">cd release/</span><br></pre></td></tr></table></figure>
+
+<p>然后我们依次执行以下命令安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cmake -G “Unix Makefiles” .. </span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<p>全部命令执行成功后，实际上就安装完成了，我们可以从最后的输出中看到，相关内容已经被安装到了 <code>/usr/local/include</code>、<code>/usr/local/lib</code> 等文件夹下。</p>
+<h3 id="使用-Xcode-编写人脸识别程序"><a href="#使用-Xcode-编写人脸识别程序" class="headerlink" title="使用 Xcode 编写人脸识别程序"></a>使用 Xcode 编写人脸识别程序</h3><p>我们可以使用 Xcode 建立一个命令行程序，这里我们还需要处理两个问题：</p>
+<ul>
+<li>OpenCV 的引入</li>
+<li>摄像头权限的获取</li>
+</ul>
+<h4 id="OpenCV-的引入"><a href="#OpenCV-的引入" class="headerlink" title="OpenCV 的引入"></a>OpenCV 的引入</h4><p>对于第一点，我们在 <strong>Build Setting</strong> 的 <strong>Search Paths</strong> 中增加 Header 和 Library 的路径：</p>
+<p><img src="/img/cv1.jpg" alt="路径"></p>
+<p>然后我们需要在 <strong>Build Phases</strong> 的 <strong>Link Binary With Libraries</strong> 中增加动态链接库。</p>
+<p>我们可以点击左下角加号，选择 <code>Add Others</code> 然后进入 <code>/usr/local/lib</code> 把 OpenCV 相关的库均包含进来即可。</p>
+<blockquote>
+<p>实际上我们可以部分引入，但是由于我们是初步上手，全部引入也可以。</p>
+</blockquote>
+<h4 id="摄像头权限的获取"><a href="#摄像头权限的获取" class="headerlink" title="摄像头权限的获取"></a>摄像头权限的获取</h4><p>这里如果我们直接运行我们的程序，在 macOS 最新的系统中是无法运行通过的，这里涉及到摄像头权限问题。</p>
+<p>一般来说，对于 macOS，我们需要在运行程序的目录下声明 <code>info.plist</code>, 这样程序在运行的时候系统会自动有申请权限的弹窗，对于我们测试场景下而言，我们可以这样做：</p>
+<ul>
+<li>进入我们 Product 存放的目录（注意不是项目代码目录，可以在 Products 条目右单击 <code>Show in Finder</code>）</li>
+<li>复制一个 info.plist（这里我们可以随便找一个本地安装的应用程序的 info.plist，一般右单击显示包内容即可看到）</li>
+<li>在 info.plist 中增加 <code>NSCameraUsageDescription</code>，value 即提示语，可以写比如 <code>摄像头权限的获取</code>。</li>
+</ul>
+<h4 id="书写并运行程序"><a href="#书写并运行程序" class="headerlink" title="书写并运行程序"></a>书写并运行程序</h4><p>做完上述准备工作后，我们可以写我们的人脸识别程序了，这里给出一个成功运行的代码示例（参考了网上的一些例子）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;opencv2/opencv.hpp&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line">using namespace cv;</span><br><span class="line"></span><br><span class="line">void capture();</span><br><span class="line"></span><br><span class="line">// 是否退出摄像头抓取线程</span><br><span class="line">static bool g_quit = false;</span><br><span class="line"></span><br><span class="line">int main(int argc, char** argv) &#123;</span><br><span class="line">    capture();</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void capture()</span><br><span class="line">&#123;</span><br><span class="line">    // 打开摄像头</span><br><span class="line">    cv::VideoCapture cap(0);</span><br><span class="line">    </span><br><span class="line">    // 如果打开失败，返回错误</span><br><span class="line">    if (!cap.isOpened())</span><br><span class="line">    &#123;</span><br><span class="line">        cout&lt;&lt;&quot;Open Capture Failed&quot;&lt;&lt;endl;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 人脸识别分类器</span><br><span class="line">    cv::CascadeClassifier faceCascadeClassifier(&quot;/usr/local/share/opencv4/haarcascades/haarcascade_frontalface_alt2.xml&quot;);</span><br><span class="line">    </span><br><span class="line">    // 读取 Frame ，直到退出系统</span><br><span class="line">    while (!g_quit)</span><br><span class="line">    &#123;</span><br><span class="line">        cv::Mat frame;</span><br><span class="line">        if (!cap.read(frame))</span><br><span class="line">        &#123;</span><br><span class="line">            // 读取失败，返回错误</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        // 进行人脸识别</span><br><span class="line">        std::vector&lt;cv::Rect&gt; faces;</span><br><span class="line">        faceCascadeClassifier.detectMultiScale(frame, faces);</span><br><span class="line">        // 将人脸识别结果绘制到图片上</span><br><span class="line">        for (const auto&amp; face : faces)</span><br><span class="line">        &#123;</span><br><span class="line">            cout&lt;&lt;&quot;Find Face&quot;&lt;&lt;endl;</span><br><span class="line">            cv::rectangle(frame,</span><br><span class="line">                          cv::Point(face.x, face.y),</span><br><span class="line">                          cv::Point(face.x + face.width, face.y + face.height),</span><br><span class="line">                          CV_RGB(255, 0, 0),</span><br><span class="line">                          2);</span><br><span class="line">        &#125;</span><br><span class="line">        imshow(&quot;Display Image&quot;, frame);</span><br><span class="line">        waitKey(100);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里值得注意的是，我们这里使用的人脸识别分类器是 OpenCV 安装后自带的，你本机的目录可能并不是这一个（这个路径实际上安装好 OpenCV 之后会打印在控制台）。</p>
+<p>正常情况下，以上程序可以直接编译执行。</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='true'
+        data-ci=''
+        data-cs=''
+        data-r='suda'
+        data-o='xixi-cmd'
+        data-a='xixi-cmd'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-OpenCV"><span class="toc-number">1.</span> <span class="toc-text">安装 OpenCV</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Xcode-%E7%BC%96%E5%86%99%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB%E7%A8%8B%E5%BA%8F"><span class="toc-number">2.</span> <span class="toc-text">使用 Xcode 编写人脸识别程序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#OpenCV-%E7%9A%84%E5%BC%95%E5%85%A5"><span class="toc-number">2.1.</span> <span class="toc-text">OpenCV 的引入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%91%84%E5%83%8F%E5%A4%B4%E6%9D%83%E9%99%90%E7%9A%84%E8%8E%B7%E5%8F%96"><span class="toc-number">2.2.</span> <span class="toc-text">摄像头权限的获取</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B9%A6%E5%86%99%E5%B9%B6%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F"><span class="toc-number">2.3.</span> <span class="toc-text">书写并运行程序</span></a></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</html>

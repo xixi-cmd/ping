@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>为什么不尝试下 IntelliJ IDEA？我想劝说你 - WeiKe</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="weike,"> 
+    <meta name="description" content="私のすべてを支配してください,
+
+
+
+本文对象
+Eclipse、MyEclipse、NetBeans、Vim、Sublime Text 重度患者
+
+本文目标
+本篇不讲 IntelliJ IDEA 技巧类的具体东西，关于技巧这类东,"> 
+    <meta name="author" content="WeiKe_Joe"> 
+    <link rel="alternative" href="atom.xml" title="WeiKe" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">WeiKe</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://cn.weikecc.top"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">为什么不尝试下 IntelliJ IDEA？我想劝说你</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">为什么不尝试下 IntelliJ IDEA？我想劝说你</h1>
+        <div class="stuff">
+            <span>三月 11, 2016</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/IntelliJ-IDEA/" rel="tag">IntelliJ IDEA</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <span id="more"></span>
+
+
+<p><img src="http://img.youmeek.com/2016/IntelliJ-IDEA-ER.jpg" alt="IntelliJ IDEA"></p>
+<h2 id="本文对象"><a href="#本文对象" class="headerlink" title="本文对象"></a>本文对象</h2><ul>
+<li>Eclipse、MyEclipse、NetBeans、Vim、Sublime Text 重度患者</li>
+</ul>
+<h2 id="本文目标"><a href="#本文目标" class="headerlink" title="本文目标"></a>本文目标</h2><ul>
+<li>本篇不讲 IntelliJ IDEA 技巧类的具体东西，关于技巧这类东西我已经系统整理过了，你可以去这里看：<a target="_blank" rel="noopener" href="https://github.com/judasn/IntelliJ-IDEA-Tutorial">https://github.com/judasn/IntelliJ-IDEA-Tutorial</a></li>
+<li>写这篇文章主要目的是想给你留下一个印象，关于一个沉浸式的 IDE。</li>
+<li>学习过程的核心思想：<strong>IntelliJ IDEA 跟 Eclipse 或是其他 IDE 完全不一样，所以放下过去的思维。</strong></li>
+<li>懂 Maven 和 Gradle 学习它会更快，因为它本身就是模块化的。</li>
+</ul>
+<h2 id="过去有感"><a href="#过去有感" class="headerlink" title="过去有感"></a>过去有感</h2><ul>
+<li>在我记忆中，<strong>所有的大学 Java IDE 只有一个：Eclipse</strong>，所以我也是这样过来的。</li>
+<li>我知道做 Java 开发的你们 Eclipse 用得很习惯，可能要怪大学老师。也知道 MyEclipse 能解决做 Java 开发的常见问题。所以我理解你们还在坚持它们的原因，就像几年前刚到一家公司的时候，我暗地里认为我的 MyEclipse 会是如何如何地好，了解的插件是如何如何多。你们那个 IntelliJ IDEA 界面丑、默认字体丑、占用内存又高，我是排斥的。</li>
+<li>可是为了融入圈子我只能自己去适应周边的人，我开始逼着自己去了解 IntelliJ IDEA。后来，我专门为它配置了一台 i7、SSD、16G 的机子来伺候它。</li>
+</ul>
+<h2 id="IntelliJ-IDEA-特色"><a href="#IntelliJ-IDEA-特色" class="headerlink" title="IntelliJ IDEA 特色"></a>IntelliJ IDEA 特色</h2><ul>
+<li>下面我说几个它特殊的地方，跟 Eclipse / Myeclipse 有重叠或是类似的我这里你就不说了，这些细节在你学习的过程中你自己会发现、对比。</li>
+<li>我是这样形容 IntelliJ IDEA 的：沉浸式 IDE。</li>
+<li>鲜明特色：<ul>
+<li><strong>特点一</strong>：<ul>
+<li>下面一些语言的支持需要额外装官网提供的插件，具体可以到插件库里找</li>
+<li><strong>支持的语言/平台</strong>：<ul>
+<li><code>Java、JavaScript、TypeScript 、CoffeeScript、Node.js、AngularJS、React、JRuby、ActionScript、SASS、LESS、HTML、CSS</code></li>
+<li><code>Bash、Markdown、Kotlin、PHP、Python、Ruby、Scala、Clojure、Groovy、Android、PhoneGap、Cordova、Ionic</code></li>
+</ul>
+</li>
+<li><strong>支持的框架</strong>：<ul>
+<li><code>Spring、Spring Boot、Spring MVC、Hibernate、Struts、Mybatis、Flex、JSF、Play</code></li>
+<li><code>Web Services、Grails、GWT、Vaadin、Guice、FreeMarker、Velocity、Thymeleaf</code></li>
+</ul>
+</li>
+<li><strong>支持的构建工具</strong>：<code>Maven、Gradle、SBT、Grunt、Bower</code></li>
+<li><strong>支持的应用容器</strong>：<code>Tomcat、TomEE、WebLogin、JBoss、Jetty、WebSphere</code></li>
+<li><strong>支持的版本工具</strong>：<code>Git、SVN、CVS、Mercurial、Perforce, ClearCase、TFS</code></li>
+<li><strong>额外支持</strong>：<ul>
+<li><code>自带反编译、可以在反编译的类中 Debug、如果是开源框架会自动帮你下载源码</code></li>
+<li><code>终端、数据库 GUI（Oracle、SQL Server、PostgreSQL、MySQL），REST Client</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>特点二</strong>：<ul>
+<li>它有美妙的快捷键，以及任何地方都支持自定义快捷键，是一个完全可以离开鼠标的 IDE，撒谎的人是小狗。</li>
+</ul>
+</li>
+<li><strong>特点三</strong>：<ul>
+<li>无限制、无条件地搜索。IntelliJ IDEA 是有索引的概念，也因为有索引的原因，我们对整个项目进行全文检索是非常非常非常快的，但是也是这个索引，所以当它首次启动某个项目的时候都需要先扫描一下这个项目的所有文件来创建成它的索引，所以，IntelliJ IDEA 首次启动某个项目花的时间会比较多、而且卡。但是我认为这是值得的，后面有无数次的开发我们可以加倍返还。</li>
+</ul>
+</li>
+<li><strong>特点四</strong>：<ul>
+<li>高效的导航。IntelliJ IDEA 除了各种搜索无敌，还有各种导航。</li>
+<li>你任何时候都可以快速到某个类的父类、子类、接口、测试类、引用地，可以快速到某个变量、方法、文件、包。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>沉浸式的原因是：IntelliJ IDEA 一站解决基本上市场上常见的开发所需。</li>
+<li>也许你第一眼看到上面的关键字会认为我在说梦话，而我也搞不懂 JetBrains 那些人</li>
+</ul>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><ul>
+<li>IntelliJ IDEA 功能多，耗内存，后端开发内存最好 8 G 以上，前端开发 4 G 以上。</li>
+<li>Android 的开发人员是比较有权力说 Eclipse 和 IntelliJ IDEA 的差异的，希望 IntelliJ IDEA 家的产品没有托你后退。</li>
+</ul>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='true'
+        data-ci=''
+        data-cs=''
+        data-r='suda'
+        data-o='xixi-cmd'
+        data-a='xixi-cmd'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E6%96%87%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.</span> <span class="toc-text">本文对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E6%96%87%E7%9B%AE%E6%A0%87"><span class="toc-number">2.</span> <span class="toc-text">本文目标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%87%E5%8E%BB%E6%9C%89%E6%84%9F"><span class="toc-number">3.</span> <span class="toc-text">过去有感</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IntelliJ-IDEA-%E7%89%B9%E8%89%B2"><span class="toc-number">4.</span> <span class="toc-text">IntelliJ IDEA 特色</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9D%9F%E8%AF%AD"><span class="toc-number">5.</span> <span class="toc-text">结束语</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</html>

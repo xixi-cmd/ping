@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>hexo-插件 - WeiKe</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="weike,"> 
+    <meta name="description" content="私のすべてを支配してください,&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+hexo-abbrlinkGithub: https://github.com/rozbo/hexo-abbrlinkA Hexo plugin t,"> 
+    <meta name="author" content="WeiKe_Joe"> 
+    <link rel="alternative" href="atom.xml" title="WeiKe" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">WeiKe</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://cn.weikecc.top"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">hexo-插件</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">hexo-插件</h1>
+        <div class="stuff">
+            <span>十一月 24, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/plugins/" rel="tag">plugins</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<h2 id="hexo-abbrlink"><a href="#hexo-abbrlink" class="headerlink" title="hexo-abbrlink"></a>hexo-abbrlink</h2><p>Github: <a target="_blank" rel="noopener" href="https://github.com/rozbo/hexo-abbrlink">https://github.com/rozbo/hexo-abbrlink</a><br>A Hexo plugin to generate static post link based on post titles.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;根目录右键<code>git bash here</code>，下载插件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i hexo-abbrlink --save</span><br></pre></td></tr></table></figure>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;在站点根目录的<code>_config.yml</code>内配置：<br>&nbsp;&nbsp;&nbsp;&nbsp;修改<code>permalink</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">permalink:</span> <span class="string">posts/:abbrlink/</span></span><br></pre></td></tr></table></figure>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;加入下方配置：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># abbrlink config</span></span><br><span class="line"><span class="attr">abbrlink:</span></span><br><span class="line">  <span class="attr">alg:</span> <span class="string">crc32</span>      <span class="comment">#support crc16(default) and crc32</span></span><br><span class="line">  <span class="attr">rep:</span> <span class="string">hex</span>        <span class="comment">#support dec(default) and hex</span></span><br></pre></td></tr></table></figure>
+
+
+<p>example: <a target="_blank" rel="noopener" href="https://blog.imciraos.com/posts/5a3fb175">https://blog.imciraos.com/posts/5a3fb175</a></p>
+<h2 id="hexo-generate-feed"><a href="#hexo-generate-feed" class="headerlink" title="hexo-generate-feed"></a>hexo-generate-feed</h2><p>Github: <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo-generator-feed">https://github.com/hexojs/hexo-generator-feed</a><br>demo: <a target="_blank" rel="noopener" href="https://blog.imciraos.com/atom.xml">https://blog.imciraos.com/atom.xml</a><br>In the front-matter of your post, you can optionally add a description, intro or description setting to write a summary for the post. Otherwise the summary will default to the description or the first 140 characters of the post.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;下载插件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i hexo-generate-feed --save</span><br></pre></td></tr></table></figure>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;再在根目录站点配置文件<code>_config.yml</code>内加入如下配置：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># feed - RSS</span></span><br><span class="line"><span class="attr">feed:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">atom</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">atom.xml</span></span><br><span class="line">  <span class="attr">limit:</span> <span class="number">20</span></span><br><span class="line">  <span class="attr">hub:</span></span><br><span class="line">  <span class="attr">content:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">content_limit:</span> <span class="number">140</span></span><br><span class="line">  <span class="attr">content_limit_delim:</span> <span class="number">25</span></span><br><span class="line">  <span class="attr">order_by:</span> <span class="string">-date</span></span><br><span class="line">  <span class="attr">icon:</span> <span class="string">icon.png</span></span><br><span class="line">  <span class="attr">autodiscovery:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">template:</span></span><br></pre></td></tr></table></figure>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;在主题配置文件中加入链接：<br>&nbsp;&nbsp;&nbsp;&nbsp;我建议加在<code>social icons</code>处：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># social settings (社交圖標設置)</span></span><br><span class="line"><span class="comment"># formal:</span></span><br><span class="line"><span class="comment">#   icon: link || the description</span></span><br><span class="line"><span class="attr">social:</span></span><br><span class="line">  <span class="attr">iconfont icon-RSS:</span> <span class="string">/atom.xml</span> <span class="string">||</span> <span class="string">RSS</span></span><br></pre></td></tr></table></figure>
+
+<p>其中，</p>
+<ul>
+<li><code>iconfont icon-RSS</code>为窝添加的<code>aliyun iconfont 图标</code>。当然，你也可以自定义，<code>fontawesome</code>也可以。</li>
+</ul>
+<h2 id="hexo-bilibili-bangumi"><a href="#hexo-bilibili-bangumi" class="headerlink" title="hexo-bilibili-bangumi"></a>hexo-bilibili-bangumi</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;在这里：<a target="_blank" rel="noopener" href="https://blog.imciraos.com/posts/63361280">增加bilibili-追番列表</a></p>
+<h2 id="hexo-offline-popup"><a href="#hexo-offline-popup" class="headerlink" title="hexo-offline-popup"></a>hexo-offline-popup</h2><p>hexo-offline-popup是一个hexo插件， 它可加速您的Hexo网站的加载速度，以及网站内容更新弹窗提示。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;在博客根目录右键单击<code>Git bash here</code>，输入下面这一行代码，来下载插件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-offline-popup --save</span><br></pre></td></tr></table></figure>
+
+<p>之后，在博客根目录<code>_config.yml</code>内引入下面代码：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># offline config passed to sw-precache.</span></span><br><span class="line"><span class="attr">service_worker:</span></span><br><span class="line">  <span class="attr">maximumFileSizeToCacheInBytes:</span> <span class="number">5242880</span></span><br><span class="line">  <span class="attr">staticFileGlobs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">public/**/*.&#123;js,html,css,png,jpg,gif,svg,eot,ttf,woff,woff2&#125;</span></span><br><span class="line">  <span class="attr">stripPrefix:</span> <span class="string">public</span></span><br><span class="line">  <span class="attr">verbose:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">directoryindex:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">runtimeCaching:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">urlPattern:</span> <span class="string">/*</span></span><br><span class="line">      <span class="attr">handler:</span> <span class="string">cacheFirst</span></span><br><span class="line">      <span class="attr">options:</span></span><br><span class="line">        <span class="attr">origin:</span> <span class="string">alicdn.com</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">urlPattern:</span> <span class="string">/npm/*</span></span><br><span class="line">      <span class="attr">handler:</span> <span class="string">cacheFirst</span></span><br><span class="line">      <span class="attr">options:</span></span><br><span class="line">        <span class="attr">origin:</span> <span class="string">cdn.jsdelivr.net</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">urlPattern:</span> <span class="string">/*</span></span><br><span class="line">      <span class="attr">handler:</span> <span class="string">cacheFirst</span></span><br><span class="line">      <span class="attr">options:</span></span><br><span class="line">        <span class="attr">origin:</span> <span class="string">ftp.bmp.ovh</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">urlPattern:</span> <span class="string">/*</span></span><br><span class="line">      <span class="attr">handler:</span> <span class="string">cacheFirst</span></span><br><span class="line">      <span class="attr">options:</span></span><br><span class="line">        <span class="attr">origin:</span> <span class="string">i.loli.net</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>urlPattern</code>，注意通配符。<code>cdn.jsdelivr.net</code>域名中有<code>npm</code>，故将此域名填在此<code>origin</code>处。</p>
+</li>
+<li><p><code>origin</code>可以用来输入自己引用的外链的域名，例如<code>alicdn.com</code>、<code>cdn.jsdelivr.net</code>、<code>i.loli.net</code>等等。</p>
+</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;部署！</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">hexo</span> <span class="string">cl</span> <span class="string">&amp;&amp;</span> <span class="string">hexo</span> <span class="string">g</span> <span class="string">&amp;&amp;</span> <span class="string">hexo</span> <span class="string">d</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="hexo-filter-nofollow"><a href="#hexo-filter-nofollow" class="headerlink" title="hexo-filter-nofollow"></a>hexo-filter-nofollow</h2><p>Add nofollow attribute to all external links automatically.</p>
+<h2 id="hexo-generator-sitemap"><a href="#hexo-generator-sitemap" class="headerlink" title="hexo-generator-sitemap"></a>hexo-generator-sitemap</h2><p>咕咕咕</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='true'
+        data-ci=''
+        data-cs=''
+        data-r='suda'
+        data-o='xixi-cmd'
+        data-a='xixi-cmd'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo-abbrlink"><span class="toc-number">1.</span> <span class="toc-text">hexo-abbrlink</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo-generate-feed"><span class="toc-number">2.</span> <span class="toc-text">hexo-generate-feed</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo-bilibili-bangumi"><span class="toc-number">3.</span> <span class="toc-text">hexo-bilibili-bangumi</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo-offline-popup"><span class="toc-number">4.</span> <span class="toc-text">hexo-offline-popup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo-filter-nofollow"><span class="toc-number">5.</span> <span class="toc-text">hexo-filter-nofollow</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo-generator-sitemap"><span class="toc-number">6.</span> <span class="toc-text">hexo-generator-sitemap</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</html>

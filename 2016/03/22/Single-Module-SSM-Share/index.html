@@ -1,0 +1,278 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Maven 的 单模块 / 多模块 之 Spring MVC + Spring + Mybatis 项目讲解（基于 IntelliJ IDEA） - WeiKe</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="weike,"> 
+    <meta name="description" content="私のすべてを支配してください,
+
+
+初衷
+为了给一个叫做简的女孩子带来便利，让她更加方便学习
+展示 IntelliJ IDEA 高度集成化的效果，降低 IntelliJ IDEA 入门时间
+
+视频下载
+单模块的 Spring M,"> 
+    <meta name="author" content="WeiKe_Joe"> 
+    <link rel="alternative" href="atom.xml" title="WeiKe" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">WeiKe</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://cn.weikecc.top"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Maven 的 单模块 / 多模块 之 Spring MVC + Spring + Mybatis 项目讲解（基于 IntelliJ IDEA）</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Maven 的 单模块 / 多模块 之 Spring MVC + Spring + Mybatis 项目讲解（基于 IntelliJ IDEA）</h1>
+        <div class="stuff">
+            <span>三月 22, 2016</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/IntelliJ-IDEA/" rel="tag">IntelliJ IDEA</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <span id="more"></span>
+
+<p><img src="http://img.youmeek.com/2016/IntelliJ-IDEA-SSM.jpg" alt="IntelliJ IDEA"></p>
+<h2 id="初衷"><a href="#初衷" class="headerlink" title="初衷"></a>初衷</h2><ul>
+<li>为了给一个叫做简的女孩子带来便利，让她更加方便学习</li>
+<li>展示 IntelliJ IDEA 高度集成化的效果，降低 IntelliJ IDEA 入门时间</li>
+</ul>
+<h2 id="视频下载"><a href="#视频下载" class="headerlink" title="视频下载"></a>视频下载</h2><ul>
+<li><strong>单模块的 Spring MVC + Spring + Mybatis 讲解（基于 IntelliJ IDEA）</strong><ul>
+<li>百度云盘：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1dEuxWh7">http://pan.baidu.com/s/1dEuxWh7</a></li>
+<li>360 云盘（6d49）：<a target="_blank" rel="noopener" href="https://yunpan.cn/cY444GphNgMe3">https://yunpan.cn/cY444GphNgMe3</a></li>
+</ul>
+</li>
+<li><strong>多模块的 Spring MVC + Spring + Mybatis 讲解（基于 IntelliJ IDEA）</strong><ul>
+<li>百度云盘：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1hr0x6sc">http://pan.baidu.com/s/1hr0x6sc</a></li>
+<li>360 云盘（e319）：<a target="_blank" rel="noopener" href="https://yunpan.cn/cY4INmfJn8yvm">https://yunpan.cn/cY4INmfJn8yvm</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><ul>
+<li>JDK 7（理论上支持 JDK 6、JDK 7、JDK 8）</li>
+<li>Mysql 5.6</li>
+<li>Maven 3.1.1</li>
+<li>Tomcat 7</li>
+<li>Git 2.7.0.2-64-bit</li>
+<li>IntelliJ IDEA 15.0.4</li>
+<li>所有编码：UTF-8</li>
+</ul>
+<h2 id="演示内容"><a href="#演示内容" class="headerlink" title="演示内容"></a>演示内容</h2><ul>
+<li>环境相关：<ul>
+<li>Maven 环境说明：<a target="_blank" rel="noopener" href="http://code.youmeek.com/2016/03/09/2016/03/Maven/">http://code.youmeek.com/2016/03/09/2016/03/Maven/</a></li>
+<li>我的 Maven 环境分享下载：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1bnPZU2b">http://pan.baidu.com/s/1bnPZU2b</a><ul>
+<li>建议你也跟我一样直接解压在 D 盘根目录，这样其他就不需要设置了</li>
+</ul>
+</li>
+<li>Git 环境的说明：<a target="_blank" rel="noopener" href="http://code.youmeek.com/2016/02/28/2016/02/Hexo/">http://code.youmeek.com/2016/02/28/2016/02/Hexo/</a></li>
+<li>IntelliJ IDEA 基础教程系列：<a target="_blank" rel="noopener" href="https://github.com/judasn/IntelliJ-IDEA-Tutorial">https://github.com/judasn/IntelliJ-IDEA-Tutorial</a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>IntelliJ IDEA 设置：<ul>
+<li>Fork 单模块项目：<a target="_blank" rel="noopener" href="https://github.com/judasn/Basic-Single-Module-SSM">https://github.com/judasn/Basic-Single-Module-SSM</a></li>
+<li>Fork 多模块项目：<a target="_blank" rel="noopener" href="https://github.com/judasn/Basic-Multi-Module-SSM">https://github.com/judasn/Basic-Multi-Module-SSM</a></li>
+<li>Checkout 项目并导入</li>
+<li>IntelliJ IDEA Maven 设置</li>
+<li>IntelliJ IDEA 文件编码设置</li>
+<li>IntelliJ IDEA Mybatis 插件安装（该插件收费）：<a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/7293?pr=">https://plugins.jetbrains.com/plugin/7293?pr=</a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>项目设置：<ul>
+<li>项目 JDK 设置</li>
+<li>项目 Facet 加入 Spring 配置</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>代码相关：<ul>
+<li>简单讲解 pom.xml 文件</li>
+<li>用 IntelliJ IDEA 的 Database 初始化数据库</li>
+<li>单元测试</li>
+<li>启动 Tomcat 加上 Make Project 事件</li>
+<li>访问 Controller 演示 Debug</li>
+<li>讲解 Controller 中代码左侧的各个按钮效果</li>
+<li>JSP 页面直接点击请求地址直接跳转到 Controller</li>
+<li>静态资源映射特别提醒下，比如你做图片上传等等，如果你没有映射好可能都会遇到 404</li>
+<li>查看 Druid 提供监控</li>
+<li>演示用 Mybatis 插件自动生成代码</li>
+</ul>
+</li>
+</ul>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><ul>
+<li>简，希望你有在好好学习，找到一个满意的工作</li>
+</ul>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='true'
+        data-ci=''
+        data-cs=''
+        data-r='suda'
+        data-o='xixi-cmd'
+        data-a='xixi-cmd'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9D%E8%A1%B7"><span class="toc-number">1.</span> <span class="toc-text">初衷</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%86%E9%A2%91%E4%B8%8B%E8%BD%BD"><span class="toc-number">2.</span> <span class="toc-text">视频下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83"><span class="toc-number">3.</span> <span class="toc-text">开发环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%94%E7%A4%BA%E5%86%85%E5%AE%B9"><span class="toc-number">4.</span> <span class="toc-text">演示内容</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9D%9F%E8%AF%AD"><span class="toc-number">5.</span> <span class="toc-text">结束语</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</html>

@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>构建利用Proxy和Reflect实现双向数据绑定的微框架 - WeiKe</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="weike,"> 
+    <meta name="description" content="私のすべてを支配してください,
+写在前面：这篇文章讲述了如何利用Proxy和Reflect实现双向数据绑定，个人系Vue早期玩家，写这个小框架的时候也没有参考Vue等源代码，之前了解过其他实现，但没有直接参考其他代码，如有雷同，,"> 
+    <meta name="author" content="WeiKe_Joe"> 
+    <link rel="alternative" href="atom.xml" title="WeiKe" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">WeiKe</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://cn.weikecc.top"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">构建利用Proxy和Reflect实现双向数据绑定的微框架</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">构建利用Proxy和Reflect实现双向数据绑定的微框架</h1>
+        <div class="stuff">
+            <span>四月 09, 2018</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/MVVM/" rel="tag">MVVM</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <blockquote>
+<p>写在前面：这篇文章讲述了如何利用Proxy和Reflect实现双向数据绑定，个人系Vue早期玩家，写这个小框架的时候也没有参考Vue等源代码，之前了解过其他实现，但没有直接参考其他代码，如有雷同，纯属巧合。</p>
+</blockquote>
+<p>代码下载地址：<a target="_blank" rel="noopener" href="https://github.com/aircloud/Polar.js">这里下载</a></p>
+<h3 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h3><p><em>关于Proxy和Reflect的资料推荐阮老师的教程:<a target="_blank" rel="noopener" href="http://es6.ruanyifeng.com/">http://es6.ruanyifeng.com/</a> 这里不做过多介绍。</em></p>
+<p>实现双向数据绑定的方法有很多，也可以参考本专栏之前的其他实现，我之所以选择用Proxy和Reflect，一方面是因为可以大量节约代码，并且简化逻辑，可以让我把更多的经历放在其他内容的构建上面，另外一方面本项目直接基于ES6，用这些内容也符合面向未来的JS编程规范，第三点最后说。</p>
+<p>由于这个小框架是自己在PolarBear这个咖啡馆在一个安静的午后开始写成，暂且起名Polar，日后希望我能继续完善这个小框架，给添加上更多有趣的功能。</p>
+<p>首先我们可以看整体功能演示：<br>[一个gif动图，如果不能看，请点击<a target="_blank" rel="noopener" href="https://www.10000h.top/images/data_img/gif1.gif">这里的链接</a>]</p>
+<p><img src="https://www.10000h.top/images/data_img/gif1.gif"></p>
+<h3 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h3><p>我们要做这样一个小框架，核心是要监听数据的改变，并且在数据的改变的时候进行一些操作，从而维持数据的一致。</p>
+<p>我的思路是这样的：</p>
+<ul>
+<li>将所有的数据信息放在一个属性对象中(this._data),之后给这个属性对象用Proxy包装set,在代理函数中我们更新属性对象的具体内容，同时通知所有监听者，之后返回新的代理对象(this.data)，我们之后操作的都是新的代理对象。</li>
+<li>对于input等表单，我们需要监听input事件，在回调函数中直接设置我们代理好的数据对象，从而触发我们的代理函数。</li>
+<li>我们同时也应该支持事件机制，这里我们以最常用的click方法作为例子实现。</li>
+</ul>
+<p>下面开始第一部分，我们希望我们之后使用这个库的时候可以这样调用:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=&quot;app&quot;&gt;</span><br><span class="line">    &lt;form&gt;</span><br><span class="line">        &lt;label&gt;name:&lt;/label&gt;</span><br><span class="line">        &lt;input p-model = &quot;name&quot; /&gt;</span><br><span class="line">    &lt;/form&gt;</span><br><span class="line">    &lt;div&gt;name:&#123;&#123;name&#125;&#125; age:&#123;&#123;age&#125;&#125;&lt;/div&gt;</span><br><span class="line">    &lt;i&gt;note:&#123;&#123;note&#125;&#125;&lt;/i&gt;&lt;br/&gt;</span><br><span class="line">    &lt;button p-click=&quot;test(2)&quot;&gt;button1&lt;/button&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line"> var myPolar = new Polar(&#123;</span><br><span class="line">        el:&quot;#app&quot;,</span><br><span class="line">        data: &#123;</span><br><span class="line">            name: &quot;niexiaotao&quot;,</span><br><span class="line">            age:16,</span><br><span class="line">            note:&quot;Student of Zhejiang University&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        methods:&#123;</span><br><span class="line">            test:function(e,addNumber)&#123;</span><br><span class="line">                console.log(&quot;e:&quot;,e);</span><br><span class="line">                this.data.age+=Number(addNumber);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>没错，和Vue神似吧，所以这种调用方式应当为我们所熟悉。</p>
+<p>我们需要建立一个Polar类，这个类的构造函数应该进行一些初始化操作:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> constructor(configs)&#123;</span><br><span class="line">        this.root = this.el = document.querySelector(configs.el);</span><br><span class="line">        this._data = configs.data;</span><br><span class="line">        this._data.__bindings = &#123;&#125;;</span><br><span class="line">        //创建代理对象</span><br><span class="line">        this.data = new Proxy(this._data, &#123;set&#125;);</span><br><span class="line">        this.methods = configs.methods;</span><br><span class="line"></span><br><span class="line">        this._compile(this.root);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里面的一部份内容是直接将我们传入的configs按照属性分别赋值，另外就是我们创建代理对象的过程，最后的<code>_compile</code>方法可以理解为一个私有的初始化方法。</p>
+<p>实际上我把剩下的内容几乎都放在<code>_compile</code>方法里面了，这样理解起来方便，但是之后可能要改动。</p>
+<p>我们还是先不能看我们代理的set该怎么写，因为这个时候我们还要先继续梳理思路：</p>
+<p>假设我们这样<code>&lt;div&gt;name:&#123;&#123;name&#125;&#125;&lt;/div&gt;</code>将数据绑定到dom节点，这个时候我们需要做什么呢，或者说，我们通过什么方式让dom节点和数据对应起来，随着数据改变而改变。</p>
+<p>看上文的<code>__bindings</code>。这个对象用来存储所有绑定的dom节点信息，<code>__bindings</code>本身是一个对象，每一个有对应dom节点绑定的数据名称都是它的属性，对应一个数组，数组中的每一个内容都是一个绑定信息，这样，我们在自己写的set代理函数中，我们一个个调用过去，就可以更新内容了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dataSet.__bindings[key].forEach(function(item)&#123;</span><br><span class="line">       //do something to update...</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>我这里创建了一个用于构造调用的函数，这个函数用于创建存储绑定信息的对象：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function Directive(el,polar,attr,elementValue)&#123;</span><br><span class="line">    this.el=el;//元素本身dom节点</span><br><span class="line">    this.polar = polar;//对应的polar实例</span><br><span class="line">    this.attr = attr;//元素的被绑定的属性值，比如如果是文本节点就可以是nodeValue</span><br><span class="line">    this.el[this.attr] = this.elementValue = elementValue;//初始化</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样，我们的set可以这样写:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function set(target, key, value, receiver) &#123;</span><br><span class="line">    const result = Reflect.set(target, key, value, receiver);</span><br><span class="line">    var dataSet = receiver || target;</span><br><span class="line">    dataSet.__bindings[key].forEach(function(item)&#123;</span><br><span class="line">        item.el[item.attr] = item.elementValue = value;</span><br><span class="line">    &#125;);</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来可能还有一个问题：我们的<code>&#123;&#123;name&#125;&#125;</code>实际上只是节点的一部分，这并不是节点啊，另外我们是不是还可以这么写：<code>&lt;div&gt;name:&#123;&#123;name&#125;&#125; age:&#123;&#123;age&#125;&#125;&lt;/div&gt;</code>？</p>
+<p>关于这两个问题，前者的答案是我们将<code>&#123;&#123;name&#125;&#125;</code>替换成一个文本节点，而为了应对后者的情况，我们需要将两个被绑定数据中间和前后的内容，都变成新的文本节点，然后这些文本节点组成文本节点串。(这里多说一句，html5的normalize方法可以将多个文本节点合并成一个，如果不小心调用了它，那我们的程序就要GG了)</p>
+<p>所以我们在<code>_compile</code>函数首先：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">var _this = this;</span><br><span class="line"></span><br><span class="line">        var nodes = root.children;</span><br><span class="line"></span><br><span class="line">        var bindDataTester = new RegExp(&quot;&#123;&#123;(.*?)&#125;&#125;&quot;,&quot;ig&quot;);</span><br><span class="line"></span><br><span class="line">        for(let i=0;i&lt;nodes.length;i++)&#123;</span><br><span class="line">            var node=nodes[i];</span><br><span class="line"></span><br><span class="line">            //如果还有html字节点，则递归</span><br><span class="line">            if(node.children.length)&#123;</span><br><span class="line">                this._compile(node);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            var matches = node.innerHTML.match(bindDataTester);</span><br><span class="line">            if(matches)&#123;</span><br><span class="line">                var newMatches = matches.map(function (item) &#123;</span><br><span class="line">                    return  item.replace(/&#123;&#123;(.*?)&#125;&#125;/,&quot;$1&quot;)</span><br><span class="line">                &#125;);</span><br><span class="line">                var splitTextNodes  = node.innerHTML.split(/&#123;&#123;.*?&#125;&#125;/);</span><br><span class="line">                node.innerHTML=null;</span><br><span class="line">                //更新DOM，处理同一个textnode里面多次绑定情况</span><br><span class="line">                if(splitTextNodes[0])&#123;</span><br><span class="line">                    node.append(document.createTextNode(splitTextNodes[0]));</span><br><span class="line">                &#125;</span><br><span class="line">                for(let ii=0;ii&lt;newMatches.length;ii++)&#123;</span><br><span class="line">                    var el = document.createTextNode(&#x27;&#x27;);</span><br><span class="line">                    node.appendChild(el);</span><br><span class="line">                    if(splitTextNodes[ii+1])&#123;</span><br><span class="line">                        node.append(document.createTextNode(splitTextNodes[ii+1]));</span><br><span class="line">                    &#125;</span><br><span class="line">                //对数据和dom进行绑定</span><br><span class="line">                let returnCode = !this._data.__bindings[newMatches[ii]]?</span><br><span class="line">                    this._data.__bindings[newMatches[ii]] = [new Directive(el,this,&quot;nodeValue&quot;,this.data[newMatches[ii]])]</span><br><span class="line">                    :this._data.__bindings[newMatches[ii]].push(new Directive(el,this,&quot;nodeValue&quot;,this.data[newMatches[ii]]))</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这样，我们的数据绑定阶段就写好了，接下来，我们处理<code>&lt;input p-model = &quot;name&quot; /&gt;</code>这样的情况。</p>
+<p>这实际上是一个指令，我们只需要当识别到这一个指令的时候，做一些处理，即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">if(node.hasAttribute((&quot;p-model&quot;))</span><br><span class="line">                &amp;&amp; node.tagName.toLocaleUpperCase()==&quot;INPUT&quot; || node.tagName.toLocaleUpperCase()==&quot;TEXTAREA&quot;)&#123;</span><br><span class="line">                node.addEventListener(&quot;input&quot;, (function () &#123;</span><br><span class="line"></span><br><span class="line">                    var attributeValue = node.getAttribute(&quot;p-model&quot;);</span><br><span class="line"></span><br><span class="line">                    if(_this._data.__bindings[attributeValue]) _this._data.__bindings[attributeValue].push(new Directive(node,_this,&quot;value&quot;,_this.data[attributeValue])) ;</span><br><span class="line">                    else _this._data.__bindings[attributeValue] = [new Directive(node,_this,&quot;value&quot;,_this.data[attributeValue])];</span><br><span class="line"></span><br><span class="line">                    return function (event) &#123;</span><br><span class="line">                        _this.data[attributeValue]=event.target.value</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>请注意，上面调用了一个<code>IIFE</code>，实际绑定的函数只有返回的函数那一小部分。</p>
+<p>最后我们处理事件的情况：<code>&lt;button p-click=&quot;test(2)&quot;&gt;button1&lt;/button&gt;</code></p>
+<p>实际上这比处理<code>p-model</code>还简单，但是我们为了支持函数参数的情况，处理了一下传入参数，另外我实际上将<code>event</code>始终作为一个参数传递，这也许并不是好的实践，因为使用的时候还要多注意。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">if(node.hasAttribute(&quot;p-click&quot;)) &#123;</span><br><span class="line">                node.addEventListener(&quot;click&quot;,function()&#123;</span><br><span class="line">                    var attributeValue=node.getAttribute(&quot;p-click&quot;);</span><br><span class="line">                    var args=/\(.*\)/.exec(attributeValue);</span><br><span class="line">                    //允许参数</span><br><span class="line">                    if(args) &#123;</span><br><span class="line">                        args=args[0];</span><br><span class="line">                        attributeValue=attributeValue.replace(args,&quot;&quot;);</span><br><span class="line">                        args=args.replace(/[\(\)\&#x27;\&quot;]/g,&#x27;&#x27;).split(&quot;,&quot;);</span><br><span class="line">                    &#125;</span><br><span class="line">                    else args=[];</span><br><span class="line">                    return function (event) &#123;</span><br><span class="line">                        _this.methods[attributeValue].apply(_this,[event,...args]);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在我们已经将所有的代码分析完了，是不是很清爽？代码除去注释约100行，所有源代码可以在<a target="_blank" rel="noopener" href="https://github.com/aircloud/Polar.js">这里下载</a>。这当然不能算作一个框架了，不过可以学习学习，这学期有时间的话，还要继续完善，也欢迎大家一起探讨。</p>
+<p>一起学习，一起提高，做技术应当是直接的，有问题欢迎指出～</p>
+<hr>
+<p>最后说的第三点：是自己还是一个学生，做这些内容也仅仅是出于兴趣，因为找暑期实习比较艰难，在等待鹅厂面试间隙写的这个程序，压压惊(然而并没有消息)。</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='true'
+        data-ci=''
+        data-cs=''
+        data-r='suda'
+        data-o='xixi-cmd'
+        data-a='xixi-cmd'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%BC%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">综述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">代码分析</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</html>

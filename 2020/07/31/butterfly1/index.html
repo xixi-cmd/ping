@@ -1,0 +1,334 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Butterfly添加全局吸底Aplayer教程 - WeiKe</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="weike,hexo,butterfly,主題,doc,教程,文檔,Aplayer,Aplayer吸底,pjax"> 
+    <meta name="description" content="私のすべてを支配してください,
+以下文章只是教程如果遇到使用問題，请仔细查看插件文档，或者到插件那裏反饋
+本文转载于butterfly作者 – Jerry，以获得其本人允许。
+前言如果你想使用aplayer，很多人都會推薦安裝h,"> 
+    <meta name="author" content="WeiKe_Joe"> 
+    <link rel="alternative" href="atom.xml" title="WeiKe" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">WeiKe</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://cn.weikecc.top"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Butterfly添加全局吸底Aplayer教程</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Butterfly添加全局吸底Aplayer教程</h1>
+        <div class="stuff">
+            <span>七月 31, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Aplayer/" rel="tag">Aplayer</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Hexo/" rel="tag">Hexo</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/butterfly/" rel="tag">butterfly</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E4%B8%BB%E9%A1%8C/" rel="tag">主題</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E6%95%99%E7%A8%8B/" rel="tag">教程</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p><img src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/Butterfly-add-aplayer-cover.png" alt="$cover"></p>
+<p>以下文章只是教程<br>如果遇到使用問題，请仔细查看插件文档，或者到插件那裏反饋</p>
+<p>本文转载于butterfly作者 – Jerry，以获得其本人允许。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>如果你想使用aplayer，很多人都會推薦安裝<a target="_blank" rel="noopener" href="https://github.com/MoePlayer/hexo-tag-aplayer">hexo-tag-aplayer</a>這款插件。這款插件通過Hexo獨有的標籤外掛，我們可以很方便的寫入一些參數，插件就會幫我們生成對應的html。如果你只是使用一些簡單的功能，其實無需使用到這個插件，只需以html格式書寫就行，不用插件去轉換。</p>
+<p>例如：</p>
+<p>如果使用插件，在markdown中要這樣寫</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% meting &quot;000PeZCQ1i4XVs&quot; &quot;tencent&quot; &quot;artist&quot; &quot;theme:#3F51B5&quot; &quot;mutex:true&quot; &quot;preload:auto&quot; %&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其會被插件渲染為</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;aplayer-uxAIfEUs&quot;</span> <span class="attr">class</span>=<span class="string">&quot;aplayer aplayer-tag-marker meting-tag-marker&quot;</span> <span class="attr">data-id</span>=<span class="string">&quot;000PeZCQ1i4XVs&quot;</span> <span class="attr">data-server</span>=<span class="string">&quot;tencent&quot;</span> <span class="attr">data-type</span>=<span class="string">&quot;artist&quot;</span> <span class="attr">data-mode</span>=<span class="string">&quot;circulation&quot;</span> <span class="attr">data-autoplay</span>=<span class="string">&quot;false&quot;</span> <span class="attr">data-mutex</span>=<span class="string">&quot;true&quot;</span> <span class="attr">data-listmaxheight</span>=<span class="string">&quot;340px&quot;</span> <span class="attr">data-preload</span>=<span class="string">&quot;auto&quot;</span> <span class="attr">data-theme</span>=<span class="string">&quot;#3F51B5&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果我們不想使用插件，就需要在markdown中用html的格式書寫，同時把主題配置文件中的<code>aplayerInject</code>開啟</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;aplayer&quot;</span> <span class="attr">data-id</span>=<span class="string">&quot;000PeZCQ1i4XVs&quot;</span> <span class="attr">data-server</span>=<span class="string">&quot;tencent&quot;</span> <span class="attr">data-type</span>=<span class="string">&quot;artist&quot;</span> <span class="attr">data-mutex</span>=<span class="string">&quot;true&quot;</span> <span class="attr">data-preload</span>=<span class="string">&quot;auto&quot;</span> <span class="attr">data-theme</span>=<span class="string">&quot;#3F51B5&quot;</span>&gt;</span></span><span class="xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>這樣我們就可以不用使用多一個插件，當然這種東西見仁見智，選自己喜歡的就行。</p>
+<p>回到正題，這篇文章將教大家如何在Butterfly上使用全局吸底Aplayer</p>
+<p><img src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/butterfly-aplayer-xidi.gif" alt="aplayer"></p>
+<h2 id="關閉-asset-inject"><a href="#關閉-asset-inject" class="headerlink" title="關閉 asset_inject"></a>關閉 <code>asset_inject</code></h2><p>此步驟適用於安裝了<code>hexo-tag-aplayer</code>插件的人</p>
+<p>由於需要全局都插入aplayer和meting資源，為了防止插入重複的資源，需要把asset_inject設為<code>false</code></p>
+<p>在Hexo的配置文件中</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">aplayer:</span></span><br><span class="line">  <span class="attr">meting:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">asset_inject:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="開啟主題的aplayerInject"><a href="#開啟主題的aplayerInject" class="headerlink" title="開啟主題的aplayerInject"></a>開啟主題的<code>aplayerInject</code></h2><p>在主題的配置文件中，<code>enable</code>設為<code>true</code>和<code>per_page</code>設為<code>true</code></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Inject the css and script (aplayer/meting)</span></span><br><span class="line"><span class="attr">aplayerInject:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">per_page:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="插入Aplayer-html"><a href="#插入Aplayer-html" class="headerlink" title="插入Aplayer html"></a>插入Aplayer html</h2><p>為了適配hexo-tag-aplayer，主題內置的Meting js 仍為1.2版本，並非最新的2.x版本。</p>
+<p>Aplayer html 例子：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;aplayer no-destroy&quot;</span> <span class="attr">data-id</span>=<span class="string">&quot;000PeZCQ1i4XVs&quot;</span> <span class="attr">data-server</span>=<span class="string">&quot;tencent&quot;</span> <span class="attr">data-type</span>=<span class="string">&quot;artist&quot;</span> <span class="attr">data-fixed</span>=<span class="string">&quot;true&quot;</span> <span class="attr">data-mini</span>=<span class="string">&quot;true&quot;</span> <span class="attr">data-listFolded</span>=<span class="string">&quot;false&quot;</span> <span class="attr">data-order</span>=<span class="string">&quot;random&quot;</span> <span class="attr">data-preload</span>=<span class="string">&quot;none&quot;</span> <span class="attr">data-autoplay</span>=<span class="string">&quot;true&quot;</span> <span class="attr">muted</span>&gt;</span></span><span class="xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>參數解釋</p>
+<table>
+<thead>
+<tr>
+<th>option</th>
+<th>default</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>data-id</td>
+<td><strong>require</strong></td>
+<td>song id / playlist id / album id / search keyword</td>
+</tr>
+<tr>
+<td>data-server</td>
+<td><strong>require</strong></td>
+<td>music platform: <code>netease</code>, <code>tencent</code>, <code>kugou</code>, <code>xiami</code>, <code>baidu</code></td>
+</tr>
+<tr>
+<td>data-type</td>
+<td><strong>require</strong></td>
+<td><code>song</code>, <code>playlist</code>, <code>album</code>, <code>search</code>, <code>artist</code></td>
+</tr>
+<tr>
+<td>data-fixed</td>
+<td><code>false</code></td>
+<td>enable fixed mode</td>
+</tr>
+<tr>
+<td>data-mini</td>
+<td><code>false</code></td>
+<td>enable mini mode</td>
+</tr>
+<tr>
+<td>data-autoplay</td>
+<td><code>false</code></td>
+<td>audio autoplay</td>
+</tr>
+<tr>
+<td>data-theme</td>
+<td><code>#2980b9</code></td>
+<td>main color</td>
+</tr>
+<tr>
+<td>data-loop</td>
+<td><code>all</code></td>
+<td>player loop play, values: ‘all’, ‘one’, ‘none’</td>
+</tr>
+<tr>
+<td>data-order</td>
+<td><code>list</code></td>
+<td>player play order, values: ‘list’, ‘random’</td>
+</tr>
+<tr>
+<td>data-preload</td>
+<td><code>auto</code></td>
+<td>values: ‘none’, ‘metadata’, ‘auto’</td>
+</tr>
+<tr>
+<td>data-volume</td>
+<td><code>0.7</code></td>
+<td>default volume, notice that player will remember user setting, default volume will not work after user set volume themselves</td>
+</tr>
+<tr>
+<td>data-mutex</td>
+<td><code>true</code></td>
+<td>prevent to play multiple player at the same time, pause other players when this player start play</td>
+</tr>
+<tr>
+<td>data-lrctype</td>
+<td><code>0</code></td>
+<td>lyric type</td>
+</tr>
+<tr>
+<td>data-listfolded</td>
+<td><code>false</code></td>
+<td>indicate whether list should folded at first</td>
+</tr>
+<tr>
+<td>data-listmaxheight</td>
+<td><code>340px</code></td>
+<td>list max height</td>
+</tr>
+<tr>
+<td>data-storagename</td>
+<td><code>metingjs</code></td>
+<td>localStorage key that store player setting</td>
+</tr>
+</tbody></table>
+<p><code>require</code>代表着這些參數是必須要使用的，其它的參數則可以根據自己需要配置。</p>
+<p>配置全局吸底，<code>data-fixed</code>和<code>data-mini</code>也必須配置，配置為<code>true</code></p>
+<p>如果使用Pjax，則在class裏需添加<code>no-destroy</code>，這樣防止切換頁面時Aplayer被銷毀</p>
+<p>把<code>aplayer代碼</code>插入到主題配置文件的<code>inject.bottom</code>去</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">inject:</span></span><br><span class="line">  <span class="attr">head:</span></span><br><span class="line">  <span class="attr">bottom:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&lt;div</span> <span class="string">class=&quot;aplayer</span> <span class="literal">no</span><span class="string">-destroy&quot;</span> <span class="string">data-id=&quot;000PeZCQ1i4XVs&quot;</span> <span class="string">data-server=&quot;tencent&quot;</span> <span class="string">data-type=&quot;artist&quot;</span> <span class="string">data-fixed=&quot;true&quot;</span> <span class="string">data-mini=&quot;true&quot;</span> <span class="string">data-listFolded=&quot;false&quot;</span> <span class="string">data-order=&quot;random&quot;</span> <span class="string">data-preload=&quot;none&quot;</span> <span class="string">data-autoplay=&quot;true&quot;</span> <span class="string">muted&gt;&lt;/div&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>運行Hexo就可以看到網頁左下角出現了Aplayer</p>
+<p>最後，如果你想切換頁面時，音樂不會中斷。請把主題配置文件的<code>pjax</code>設為<code>true</code></p>
+<h2 id="UI-調整"><a href="#UI-調整" class="headerlink" title="UI 調整"></a>UI 調整</h2><p>按照上面的步驟設置完成后，瀏覽器左下角會出現Aplayer。打開文章頁面時，你會發現打開Toc目錄的按鈕被遮擋了。我們需要修改CSS來改變按鈕的位置。<br>位置怎麽移動根據自己需求決定，這裏列出2種方法。</p>
+<h3 id="向上調整"><a href="#向上調整" class="headerlink" title="向上調整"></a>向上調整</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#toggle-sidebar</span> &#123;</span><br><span class="line">  <span class="attribute">bottom</span>: <span class="number">80px</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/butterfly-add-aplayer-css-bottom.gif" alt="aplayer1"></p>
+<p>在主題配置文件中，添加到<code>inject</code>去</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">inject:</span></span><br><span class="line">  <span class="attr">head:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&#x27;&lt;style type=&quot;text/css&quot;&gt;#toggle-sidebar &#123;bottom: 80px&#125;&lt;/style&gt;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="向右調整"><a href="#向右調整" class="headerlink" title="向右調整"></a>向右調整</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#toggle-sidebar</span> &#123;</span><br><span class="line">  <span class="attribute">left</span>: <span class="number">100px</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/butterfly-add-aplayer-left.gif" alt="butterfly-add-aplayer-left"></p>
+<p>在主題配置文件中，添加到<code>inject</code>去</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">inject:</span></span><br><span class="line">  <span class="attr">head:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&#x27;&lt;style type=&quot;text/css&quot;&gt;#toggle-sidebar &#123;left:100px&#125;&lt;/style&gt;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='true'
+        data-ci=''
+        data-cs=''
+        data-r='suda'
+        data-o='xixi-cmd'
+        data-a='xixi-cmd'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%9C%E9%96%89-asset-inject"><span class="toc-number">2.</span> <span class="toc-text">關閉 asset_inject</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%96%8B%E5%95%9F%E4%B8%BB%E9%A1%8C%E7%9A%84aplayerInject"><span class="toc-number">3.</span> <span class="toc-text">開啟主題的aplayerInject</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%92%E5%85%A5Aplayer-html"><span class="toc-number">4.</span> <span class="toc-text">插入Aplayer html</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UI-%E8%AA%BF%E6%95%B4"><span class="toc-number">5.</span> <span class="toc-text">UI 調整</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91%E4%B8%8A%E8%AA%BF%E6%95%B4"><span class="toc-number">5.1.</span> <span class="toc-text">向上調整</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91%E5%8F%B3%E8%AA%BF%E6%95%B4"><span class="toc-number">5.2.</span> <span class="toc-text">向右調整</span></a></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</html>

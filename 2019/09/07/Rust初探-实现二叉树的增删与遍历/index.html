@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rust初探:实现二叉树的增删与遍历 - WeiKe</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="weike,"> 
+    <meta name="description" content="私のすべてを支配してください,Rust 简介实际上自己接触 Rust 的时间还是很有限的，这里也不会对 Rust 进行长篇大论地介绍，简单来说，Rust 是一个性能和 c++ 相近的系统级编程语言，同时，由于其所有权与变量生命周,"> 
+    <meta name="author" content="WeiKe_Joe"> 
+    <link rel="alternative" href="atom.xml" title="WeiKe" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">WeiKe</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://cn.weikecc.top"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Rust初探:实现二叉树的增删与遍历</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Rust初探:实现二叉树的增删与遍历</h1>
+        <div class="stuff">
+            <span>九月 07, 2019</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Rust/" rel="tag">Rust</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h3 id="Rust-简介"><a href="#Rust-简介" class="headerlink" title="Rust 简介"></a>Rust 简介</h3><p>实际上自己接触 Rust 的时间还是很有限的，这里也不会对 Rust 进行长篇大论地介绍，简单来说，Rust 是一个性能和 c++ 相近的系统级编程语言，同时，由于其所有权与变量生命周期等机制的设计，使其相对于 c++ 来说拥有内存安全的优势，几乎不会出现诸如悬垂指针、数组越界、段错误等问题，在微软、百度、字节跳动等公司均有所使用。</p>
+<p>关于 Rust 的特性以及未来，知乎<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/30407715">这个问题中的一些高赞回答以及相关的评论</a>，非常值得一看。</p>
+<p>本文会以二叉树这样一个具体的例子出发，来对 Rust 的一部分知识内容进行学习。</p>
+<h3 id="实现二叉树数据结构"><a href="#实现二叉树数据结构" class="headerlink" title="实现二叉树数据结构"></a>实现二叉树数据结构</h3><h4 id="定义结构"><a href="#定义结构" class="headerlink" title="定义结构"></a>定义结构</h4><p>之前在 Javascript 等语言中，我们只要对对象有所了解，实现一个二叉树的数据结构是非常简单的事情，而在 Rust 中，可能对于新手来说仅仅是实现基本的数据结构就是一个比较脑壳疼的事情。</p>
+<p>我们一般会写出类似这样的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct Tree &#123;</span><br><span class="line">    value: i32,</span><br><span class="line">    left: Tree, // 直接使用 Tree 是不行的</span><br><span class="line">    right: Tree  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>自然不会通过 Rust 的编译检查，会报错例如：<code>recursive type has infinite size</code>，不过其同时给我们提供了解决方案，这里我们使用 <code>Box&lt;T&gt;</code> 指针。</p>
+<p>另外，考虑到二叉树的左右子树可能为空，所以这里我们还需要增加一个 <code>Option</code>。</p>
+<p>最终我们的二叉树数据结构定义如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#[derive(Debug, Default)]</span><br><span class="line">struct Tree &#123;</span><br><span class="line">    value: i32,</span><br><span class="line">    left: Option&lt;Box&lt;Tree&gt;&gt;,</span><br><span class="line">    right: Option&lt;Box&lt;Tree&gt;&gt;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="实现基本的方法"><a href="#实现基本的方法" class="headerlink" title="实现基本的方法"></a>实现基本的方法</h4><p>这里我们实现一些二叉树的基本的方法，作为上述结构体的方法，我们将实现以下方法：</p>
+<ul>
+<li>获取二叉树节点的值（其实也可以没有这个方法）。</li>
+<li>修改二叉树节点的值。</li>
+<li>设置子树。</li>
+<li>删除子树。</li>
+</ul>
+<p>这里除了第一个，其余我们都需要传递 <code>self</code> 的可变引用，我们的实现如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">impl Tree &#123;</span><br><span class="line">    fn get_val(&amp;self) -&gt; i32 &#123;</span><br><span class="line">        return self.value;</span><br><span class="line">    &#125;</span><br><span class="line">    fn set_val(&amp;mut self, val: i32) -&gt; i32 &#123;</span><br><span class="line">        self.value = val;</span><br><span class="line">        return self.value;</span><br><span class="line">    &#125;</span><br><span class="line">    fn insert(&amp;mut self, dir: &amp;String, val: Tree) &#123;</span><br><span class="line">        assert!(dir == &quot;left&quot; || dir == &quot;right&quot;);</span><br><span class="line">        match dir.as_ref() &#123;</span><br><span class="line">            &quot;left&quot; =&gt; self.left = Some(Box::new(val)),</span><br><span class="line">            &quot;right&quot; =&gt; self.right = Some(Box::new(val)),</span><br><span class="line">            _ =&gt; &#123; </span><br><span class="line">                println!(&quot;Insert Error: only left and right supported&quot;);</span><br><span class="line">                process::exit(1);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    fn delete(&amp;mut self, dir: &amp;String) &#123;</span><br><span class="line">        assert!(dir == &quot;left&quot; || dir == &quot;right&quot;);</span><br><span class="line">        match dir.as_ref() &#123;</span><br><span class="line">                &quot;left&quot; =&gt; self.left = None,</span><br><span class="line">                &quot;right&quot; =&gt; self.right = None,</span><br><span class="line">                 _ =&gt; &#123; </span><br><span class="line">                    println!(&quot;Insert Error: only left and right supported&quot;);</span><br><span class="line">                    process::exit(1);</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="遍历二叉树"><a href="#遍历二叉树" class="headerlink" title="遍历二叉树"></a>遍历二叉树</h3><p>这里遍历二叉树我们作为一个单独的方法，而不是属性方法来实现，这样会更符合我们平时的业务场景，这里其实问题比较多的，我们先简易实现一个版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">fn traverse(tree: Tree) &#123;</span><br><span class="line">    println!(&quot;Node Value: &#123;:?&#125;&quot;, tree.value);</span><br><span class="line">    if tree.left.is_some() &#123;</span><br><span class="line">        traverse(*tree.left.unwrap()); // 手动解引用</span><br><span class="line">    &#125;</span><br><span class="line">    if tree.right.is_some() &#123;</span><br><span class="line">        traverse(*tree.right.unwrap()); // 手动解引用</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果我们测试一下这个版本，发现的确能够正常遍历的，但是实际上这有一个致命的问题：</p>
+<p>这里采用的是所有权的移动，而不是不可变借用，这会导致我们的函数执行完后原来变量的所有权已经被移动了，换一种说法则是会消耗掉这个变量，这显然不是我们预期的。</p>
+<p>虽然我们也可以在函数中返回 tree 的方式来最后再次移动所有权，但这样非常不便于实现，经过重构，我们采用了如下的方式实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">fn traverse(tree: &amp;Tree) &#123;</span><br><span class="line">    println!(&quot;Node Value: &#123;:?&#125;&quot;, tree.value);</span><br><span class="line">    match tree.left &#123;</span><br><span class="line">        Some(ref x) =&gt; traverse(x),</span><br><span class="line">        _ =&gt; &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    match tree.right &#123;</span><br><span class="line">        Some(ref x) =&gt; traverse(x),</span><br><span class="line">        _ =&gt; &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>另外一个注意点则是由于 <code>unwrap()</code> 本身是一个消耗性操作，我们这里不能使用 <code>unwrap</code>，参考<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/22282117/how-do-i-borrow-a-reference-to-what-is-inside-an-optiont">stackOverflow的提问1</a>、<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/32338659/cannot-move-out-of-borrowed-content-when-unwrapping">stackOverflow的提问2</a>。</p>
+</blockquote>
+<p>我们最终的完整代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line">use::std::process;</span><br><span class="line">use std::borrow::Borrow;</span><br><span class="line">#[derive(Debug, Default)]</span><br><span class="line">struct Tree &#123;</span><br><span class="line">    value: i32,</span><br><span class="line">    left: Option&lt;Box&lt;Tree&gt;&gt;,</span><br><span class="line">    right: Option&lt;Box&lt;Tree&gt;&gt;   </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">impl Tree &#123;</span><br><span class="line">    fn get_val(&amp;self) -&gt; i32 &#123;</span><br><span class="line">        return self.value;</span><br><span class="line">    &#125;</span><br><span class="line">    fn set_val(&amp;mut self, val: i32) -&gt; i32 &#123;</span><br><span class="line">        self.value = val;</span><br><span class="line">        return self.value;</span><br><span class="line">    &#125;</span><br><span class="line">    fn insert(&amp;mut self, dir: &amp;String, val: Tree) &#123;</span><br><span class="line">        assert!(dir == &quot;left&quot; || dir == &quot;right&quot;);</span><br><span class="line">        match dir.as_ref() &#123;</span><br><span class="line">            &quot;left&quot; =&gt; self.left = Some(Box::new(val)),</span><br><span class="line">            &quot;right&quot; =&gt; self.right = Some(Box::new(val)),</span><br><span class="line">            _ =&gt; &#123; </span><br><span class="line">                println!(&quot;Insert Error: only left and right supported&quot;);</span><br><span class="line">                process::exit(1);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    fn delete(&amp;mut self, dir: &amp;String) &#123;</span><br><span class="line">        assert!(dir == &quot;left&quot; || dir == &quot;right&quot;);</span><br><span class="line">        match dir.as_ref() &#123;</span><br><span class="line">                &quot;left&quot; =&gt; self.left = None,</span><br><span class="line">                &quot;right&quot; =&gt; self.right = None,</span><br><span class="line">                 _ =&gt; &#123; </span><br><span class="line">                    println!(&quot;Insert Error: only left and right supported&quot;);</span><br><span class="line">                    process::exit(1);</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 原始的非消耗性遍历:</span><br><span class="line">// fn traverse(tree: &amp;Tree) &#123;</span><br><span class="line">//     println!(&quot;Node Value: &#123;:?&#125;&quot;, tree.value);</span><br><span class="line">//     if tree.left.is_some() &#123;</span><br><span class="line">//         // cannot move out of borrowed content</span><br><span class="line">//         // 首先 unwrap 是一个消耗性操作</span><br><span class="line">//         // 这是由于 unwrap 函数造成?  as_ref 也不行</span><br><span class="line">//         traverse((tree.left.as_ref().map(|x| **x).unwrap()).borrow());</span><br><span class="line">//     &#125;</span><br><span class="line">//     // if tree.right.is_some() &#123;</span><br><span class="line">//     //     // cannot move out of borrowed content</span><br><span class="line">//     //     traverse(tree.right.unwrap().borrow());</span><br><span class="line">//     // &#125;</span><br><span class="line">// &#125;</span><br><span class="line"></span><br><span class="line">// 非消耗性遍历</span><br><span class="line">fn traverse(tree: &amp;Tree) &#123;</span><br><span class="line">    println!(&quot;Node Value: &#123;:?&#125;&quot;, tree.value);</span><br><span class="line">    match tree.left &#123;</span><br><span class="line">        Some(ref x) =&gt; traverse(x),</span><br><span class="line">        _ =&gt; &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    match tree.right &#123;</span><br><span class="line">        Some(ref x) =&gt; traverse(x),</span><br><span class="line">        _ =&gt; &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 消耗性遍历：</span><br><span class="line">// fn traverse(tree: Tree) &#123;</span><br><span class="line">//     println!(&quot;Node Value: &#123;:?&#125;&quot;, tree.value);</span><br><span class="line">//     if tree.left.is_some() &#123;</span><br><span class="line">//         traverse(*tree.left.unwrap()); // 手动解引用</span><br><span class="line">//     &#125;</span><br><span class="line">//     if tree.right.is_some() &#123;</span><br><span class="line">//         traverse(*tree.right.unwrap()); // 手动解引用</span><br><span class="line">//     &#125;</span><br><span class="line">// &#125;</span><br><span class="line"></span><br><span class="line">fn main() &#123;</span><br><span class="line">    println!(&quot;begin rust tree test:&quot;);</span><br><span class="line">    let mut tree = Tree &#123; value : 12, ..Default::default() &#125;;</span><br><span class="line">    let mut left = Tree &#123; value : 121, ..Default::default() &#125;;</span><br><span class="line">    tree.insert(&amp;String::from(&quot;left&quot;), left);</span><br><span class="line">    let mut right = Tree &#123; value : 122, ..Default::default() &#125;;</span><br><span class="line">    tree.insert(&amp;String::from(&quot;right&quot;), right);</span><br><span class="line">    // tree.delete(&amp;String::from(&quot;right&quot;));</span><br><span class="line">    // println!(&quot;Tree val: &#123;:?&#125;&quot;, left.get_val()); 不能这样写，所有权已经被移动</span><br><span class="line">    traverse(&amp;tree);</span><br><span class="line">    // traverse(tree);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='true'
+        data-ci=''
+        data-cs=''
+        data-r='suda'
+        data-o='xixi-cmd'
+        data-a='xixi-cmd'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Rust-%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">Rust 简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E4%BA%8C%E5%8F%89%E6%A0%91%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">实现二叉树数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E7%BB%93%E6%9E%84"><span class="toc-number">2.1.</span> <span class="toc-text">定义结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%9F%BA%E6%9C%AC%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">2.2.</span> <span class="toc-text">实现基本的方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%81%8D%E5%8E%86%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="toc-number">3.</span> <span class="toc-text">遍历二叉树</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</html>

@@ -1,0 +1,354 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Java 开发基础规范（初稿） - WeiKe</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="weike,"> 
+    <meta name="description" content="私のすべてを支配してください,
+
+
+
+本文初衷
+以本篇为引，获取到有识之士的一些意见或是看法，促进成长！
+
+重要说明
+2017-01：阿里公开了他们自己的规范，写得还是很合理的，也很清晰，重点推荐。
+在 Google 里面搜索：,"> 
+    <meta name="author" content="WeiKe_Joe"> 
+    <link rel="alternative" href="atom.xml" title="WeiKe" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">WeiKe</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://cn.weikecc.top"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Java 开发基础规范（初稿）</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Java 开发基础规范（初稿）</h1>
+        <div class="stuff">
+            <span>三月 15, 2016</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <span id="more"></span>
+
+
+<p><img src="http://img.youmeek.com/2016/java-style.jpg" alt="IntelliJ IDEA"></p>
+<h2 id="本文初衷"><a href="#本文初衷" class="headerlink" title="本文初衷"></a>本文初衷</h2><ul>
+<li>以本篇为引，获取到有识之士的一些意见或是看法，促进成长！</li>
+</ul>
+<h2 id="重要说明"><a href="#重要说明" class="headerlink" title="重要说明"></a>重要说明</h2><ul>
+<li>2017-01：阿里公开了他们自己的规范，写得还是很合理的，也很清晰，重点推荐。<ul>
+<li>在 Google 里面搜索：<code>阿里巴巴 JAVA 开发手册</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="命名、规范"><a href="#命名、规范" class="headerlink" title="命名、规范"></a>命名、规范</h2><h3 id="Java-相关命名、规范"><a href="#Java-相关命名、规范" class="headerlink" title="Java 相关命名、规范"></a>Java 相关命名、规范</h3><ul>
+<li>命名：<ul>
+<li>Java 类名命名（用名词性单词组合）<ul>
+<li><strong>普通类名</strong>：首字母大写，需要两个、多个单词表达的，使用大驼峰命名法进行命名，<code>eg：CategoryService</code></li>
+<li><strong>抽象类名</strong>：在普通类名的基础上对其命名后加上 Abstract，<code>eg：CategoryAbstract</code></li>
+<li><strong>自定义异常类名</strong>：在普通类名的基础上对其命名后加上 Exception，<code>eg：CategoryException</code></li>
+<li><strong>队列类名</strong>：在普通类名的基础上对其命名后加上 Queue，<code>eg：CategoryQueue</code></li>
+<li><strong>后台任务类名</strong>：在普通类名的基础上对其命名后加上 Task 或 Job，<code>eg：CategoryTask、CategoryJob</code></li>
+<li><strong>Servlet 类名</strong>：在普通类名的基础上对其命名后加上 Servlet，<code>eg：CategoryServlet</code></li>
+<li><strong>Filter 类名</strong>：在普通类名的基础上对其命名后加上 Filter，<code>eg：CategoryFilter</code></li>
+<li><strong>工厂类名</strong>：在普通类名的基础上对其命名后加上 Factory，<code>eg：CategoryFactory</code></li>
+<li><strong>工具类名</strong>：在普通类名的基础上对其命名后加上 Util，<code>eg：CategoryUtil</code></li>
+<li><strong>测试类名</strong>：在普通类名的基础上对其命名后加上 Test，<code>eg：CategoryServiceTest</code></li>
+<li><strong>数据库访问层接口类名</strong>：在普通类名的基础上对其命名后加上 Dao，<code>eg：CategoryDao</code></li>
+<li><strong>数据库访问层实现类名</strong>：在普通类名的基础上对其命名后加上 DaoImpl，<code>eg：CategoryDaoImpl</code></li>
+<li><strong>业务层接口类名</strong>：在普通类名的基础上对其命名后加上 Service，<code>eg：CategoryService</code></li>
+<li><strong>业务层实现类名</strong>：在普通类名的基础上对其命名后加上 ServiceImpl，<code>eg：CategoryServiceImpl</code></li>
+<li><strong>控制层类名</strong>：在普通类名的基础上对其命名后加上 Controller，<code>eg：CategoryController、CategoryAction、CategoryActivity</code></li>
+<li><strong>对象扩展类名</strong>：在普通类名的基础上对其命名后加上 VO，<code>eg：CategoryVO(Value Object)、CategoryDTO(Data Transfer Object)、CategoryPOJO(plain ordinary java object)</code></li>
+</ul>
+</li>
+<li><strong>常量名</strong>：全部字母大写，有多个单词用下划线分隔，<code>eg：MY_AGE</code></li>
+<li><strong>常规变量名</strong>：首字母小写，需要两个、多个单词表达的，使用小驼峰命名法进行命名，<code>eg：categoryName</code></li>
+<li><strong>复数变量名</strong>：首字母小写，需要两个、多个单词表达的，使用小驼峰命名法进行命名，eg：<ul>
+<li><code>List：categoryList</code></li>
+<li><code>Map：categoryMap</code></li>
+<li><code>Set：categorySet</code></li>
+</ul>
+</li>
+<li><strong>package 名</strong>：所有单词全部小写，即使有多个单词组成，且不能使用下划线连接，或是其他任意字符连接，<code>eg：googlebook</code></li>
+<li><strong>方法参数名</strong>：首字母小写，需要两个、多个单词表达的，使用小驼峰命名法进行命名，<code>eg：categoryName</code></li>
+<li>方法命名（用动词性单词开头）：<ul>
+<li><strong>数据库访问层方法名</strong><ul>
+<li><code>saveCategory()</code></li>
+<li><code>deleteCategoryByObject()</code></li>
+<li><code>deleteCategoryById()</code></li>
+<li><code>updateCategoryByObject()</code></li>
+<li><code>updateCategoryById()</code></li>
+<li><code>findCategoryList()</code></li>
+<li><code>findCategory()</code></li>
+</ul>
+</li>
+<li><strong>业务层方法名</strong><ul>
+<li><code>saveCategory()</code></li>
+<li><code>deleteCategoryByObject()</code></li>
+<li><code>deleteCategoryById()</code></li>
+<li><code>updateCategoryByObject()</code></li>
+<li><code>updateCategoryById()</code></li>
+<li><code>findCategoryList()</code></li>
+<li><code>findCategory()</code></li>
+<li><code>initCategory()</code></li>
+<li><code>openConnection()</code></li>
+<li><code>closeConnection()</code></li>
+<li><code>writeFile()</code></li>
+<li><code>readFile()</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>视图层（JSP、FreeMarker 等）：<ul>
+<li><code>categoryList</code></li>
+<li><code>categoryAdd</code></li>
+<li><code>categoryUpdate</code></li>
+<li><code>categoryEdit</code></li>
+<li><code>categoryDetail</code></li>
+<li><code>categoryTree</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>规范：<ul>
+<li>当一个类有多个构造函数，或是多个同名方法，这些函数 / 方法应该按顺序出现在一起，中间不要放进其它函数 / 方法</li>
+<li>导入包的时候，import 后面不要使用通配符 * 来代替有些包的导入</li>
+<li>大括号与 if, else, for, do, while 语句一起使用，即使只有一条语句(或是空)，也应该把大括号写上</li>
+<li>不要使用组合声明，比如 int a, b;</li>
+<li>需要时才声明，并尽快进行初始化</li>
+<li>注解紧跟在文档块后面，应用于类、方法和构造函数，一个注解独占一行</li>
+</ul>
+</li>
+<li>注释：</li>
+<li>块注释</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">logger.info(<span class="string">&quot;---------开始---------&quot;</span>);</span><br><span class="line">SubmitOrderInfo submitOrderInfo = getSubmitOrderInfo(orderId);</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>行注释，只用来注释</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">//ResultInfo resultInfo = orderService.orderStateUpdate(voucherNo);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>行注释，用来解释</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private int categoryId = 1; // 1 是顶级分类的 ID</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Mysql-相关命名、规范"><a href="#Mysql-相关命名、规范" class="headerlink" title="Mysql 相关命名、规范"></a>Mysql 相关命名、规范</h3><ul>
+<li><p><strong>表名</strong>：全部小写，需要两个、多个单词表达的使用下划线隔开，<code>eg：prd_category</code></p>
+</li>
+<li><p><strong>字段名</strong>：全部小写，需要两个、多个单词表达的使用下划线隔开，<code>eg：category_name</code></p>
+</li>
+<li><p>注释：</p>
+</li>
+<li><p>行注释</p>
+<ul>
+<li><code># 下面内容需要先执行</code></li>
+<li><code>-- 下面内容需要先执行</code></li>
+</ul>
+</li>
+<li><p>块注释</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">下面内容需要先执行</span><br><span class="line">需要注意的是：分类的 ID 需要先检查</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>程序 SQL 补丁文件命名，eg：<ul>
+<li><code>20160306-update-更新所有会员密码</code></li>
+<li><code>20160312-delete-删除指定会员密码</code></li>
+<li><code>20160313-insert-新增会员数据</code></li>
+<li><code>20160315-alter-更新会员邮箱字段长度</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h2><ul>
+<li>数据源连接：<code>jdbc:mysql://localhost:3306/youshop?characterEncoding=utf-8</code></li>
+<li>Java 文件编码：<code>UTF-8</code></li>
+<li>XML 文件编码：<code>UTF-8</code></li>
+<li>Properties 文件编码：<code>UTF-8</code></li>
+<li>Mysql 字符集：<code>UTF-8</code></li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<li>Tab 缩进为 4 个空格，使用 IntelliJ IDEA 标准格式化即可</li>
+<li>TODO 标记必须使用个人自定义 TODO，不能使用公共的</li>
+<li>SVN、Git 提交必须有 Commit Message</li>
+</ul>
+<h2 id="资料"><a href="#资料" class="headerlink" title="资料"></a>资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/google/styleguide">https://github.com/google/styleguide</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/lanxuezaipiao/p/3534447.html">http://www.cnblogs.com/lanxuezaipiao/p/3534447.html</a></li>
+</ul>
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><ul>
+<li>感谢 Lindp 提供意见</li>
+</ul>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='true'
+        data-ci=''
+        data-cs=''
+        data-r='suda'
+        data-o='xixi-cmd'
+        data-a='xixi-cmd'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E6%96%87%E5%88%9D%E8%A1%B7"><span class="toc-number">1.</span> <span class="toc-text">本文初衷</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E8%AF%B4%E6%98%8E"><span class="toc-number">2.</span> <span class="toc-text">重要说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%BD%E5%90%8D%E3%80%81%E8%A7%84%E8%8C%83"><span class="toc-number">3.</span> <span class="toc-text">命名、规范</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Java-%E7%9B%B8%E5%85%B3%E5%91%BD%E5%90%8D%E3%80%81%E8%A7%84%E8%8C%83"><span class="toc-number">3.1.</span> <span class="toc-text">Java 相关命名、规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mysql-%E7%9B%B8%E5%85%B3%E5%91%BD%E5%90%8D%E3%80%81%E8%A7%84%E8%8C%83"><span class="toc-number">3.2.</span> <span class="toc-text">Mysql 相关命名、规范</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E7%A0%81"><span class="toc-number">4.</span> <span class="toc-text">编码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96"><span class="toc-number">5.</span> <span class="toc-text">其他</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%96%99"><span class="toc-number">6.</span> <span class="toc-text">资料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%84%9F%E8%B0%A2"><span class="toc-number">7.</span> <span class="toc-text">感谢</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</html>
